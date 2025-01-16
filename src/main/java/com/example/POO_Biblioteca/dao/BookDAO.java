@@ -30,7 +30,8 @@ public class BookDAO {
             stmt.execute("CREATE TABLE IF NOT EXISTS book (" +
                 "id INT PRIMARY KEY AUTO_INCREMENT," +
                 "title VARCHAR(255) NOT NULL," +
-                "quantity INT NOT NULL DEFAULT 0" +
+                "price DECIMAL(8, 2) NOT NULL," +
+                "quantity INT NOT NULL" +
             ")");
 
             System.out.println(stmt.getResultSet());
@@ -50,7 +51,7 @@ public class BookDAO {
             final ResultSet rs = stmt.executeQuery("SELECT * FROM book");
 
             while (rs.next()) {
-                books.add(new Book(rs.getInt("id"), rs.getString("title")));
+                books.add(new Book(rs.getInt("id"), rs.getString("title"), rs.getDouble("price"), rs.getInt("quantity")));
             }
 
             return books;
@@ -68,7 +69,7 @@ public class BookDAO {
             final ResultSet rs = stmt.executeQuery();
             rs.next();
 
-            final Book book = new Book(rs.getInt("id"), rs.getString("title"));
+            final Book book = new Book(rs.getInt("id"), rs.getString("title"), rs.getDouble("price"), rs.getInt("quantity"));
             stmt.close();
 
             return book;
@@ -81,8 +82,10 @@ public class BookDAO {
     public Book create(Connection conn, BookDTO dto) {
         final String[] returnId = { "id" };
         try {
-            final PreparedStatement stmt = conn.prepareStatement("INSERT INTO book (title) VALUES (?)", returnId);
+            final PreparedStatement stmt = conn.prepareStatement("INSERT INTO book (title, price, quantity) VALUES (?, ?, ?)", returnId);
             stmt.setString(1, dto.getTitle());
+            stmt.setDouble(2, dto.getPrice());
+            stmt.setInt(3, dto.getQuantity());
 
             final int affectedRows = stmt.executeUpdate();
             if(affectedRows == 0)
@@ -92,7 +95,7 @@ public class BookDAO {
             if(!rs.next())
                 return null;
 
-            final Book book = new Book(rs.getInt(1), dto.getTitle());
+            final Book book = new Book(rs.getInt(1), dto.getTitle(), dto.getPrice(), dto.getQuantity());
             stmt.close();
 
             return book;
@@ -104,9 +107,11 @@ public class BookDAO {
 
     public Book update(Connection conn, Book book) {
         try {
-            final PreparedStatement stmt = conn.prepareStatement("UPDATE book SET title = ? WHERE id = ?");
+            final PreparedStatement stmt = conn.prepareStatement("UPDATE book SET title = ?, price = ?, quantity = ? WHERE id = ?");
             stmt.setString(1, book.getTitle());
-            stmt.setInt(2, book.getId());
+            stmt.setDouble(2, book.getPrice());
+            stmt.setInt(3, book.getQuantity());
+            stmt.setInt(4, book.getId());
 
             final int affectedRows = stmt.executeUpdate();
             if(affectedRows == 0)
