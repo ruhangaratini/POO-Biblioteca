@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 public class Mysql {
     static final String url = "jdbc:mysql://localhost:3306/library";
-    static final String user = "root";
-    static final String password = "ifsp";
+    static final String user = "";
+    static final String password = "";
 
     static public Connection getConnection() {
         try {
