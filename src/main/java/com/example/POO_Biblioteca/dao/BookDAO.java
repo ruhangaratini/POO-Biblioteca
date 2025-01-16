@@ -2,6 +2,7 @@ package com.example.POO_Biblioteca.dao;
 
 import com.example.POO_Biblioteca.config.Mysql;
 import com.example.POO_Biblioteca.model.Book;
+import com.example.POO_Biblioteca.model.dto.BookDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -41,15 +42,15 @@ public class BookDAO {
         }
     }
 
-    public ArrayList<Book> getAll(Connection connection) {
+    public ArrayList<Book> getAll(Connection conn) {
         final ArrayList<Book> books = new ArrayList<Book>();
 
         try {
-            final Statement stmt = connection.createStatement();
+            final Statement stmt = conn.createStatement();
             final ResultSet rs = stmt.executeQuery("SELECT * FROM book");
 
             while (rs.next()) {
-                books.add(new Book(rs.getString("title")));
+                books.add(new Book(rs.getInt("id"), rs.getString("title")));
             }
 
             return books;
@@ -59,23 +60,80 @@ public class BookDAO {
         }
     }
 
-    public Book getById(Connection connection, int id) {
+    public Book getById(Connection conn, int id) {
         try {
-            final PreparedStatement stmt = connection.prepareStatement("SELECT * FROM book WHERE id = ?");
+            final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM book WHERE id = ?");
             stmt.setInt(1, id);
-
-            System.out.println(stmt);
 
             final ResultSet rs = stmt.executeQuery();
             rs.next();
 
-            final Book book = new Book(rs.getString("title"));
+            final Book book = new Book(rs.getInt("id"), rs.getString("title"));
             stmt.close();
 
             return book;
         } catch(SQLException e) {
             System.out.println(e);
             return null;
+        }
+    }
+
+    public Book create(Connection conn, BookDTO dto) {
+        final String[] returnId = { "id" };
+        try {
+            final PreparedStatement stmt = conn.prepareStatement("INSERT INTO book (title) VALUES (?)", returnId);
+            stmt.setString(1, dto.getTitle());
+
+            final int affectedRows = stmt.executeUpdate();
+            if(affectedRows == 0)
+                return null;
+
+            final ResultSet rs = stmt.getGeneratedKeys();
+            if(!rs.next())
+                return null;
+
+            final Book book = new Book(rs.getInt(1), dto.getTitle());
+            stmt.close();
+
+            return book;
+        } catch(SQLException e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    public Book update(Connection conn, Book book) {
+        try {
+            final PreparedStatement stmt = conn.prepareStatement("UPDATE book SET title = ? WHERE id = ?");
+            stmt.setString(1, book.getTitle());
+            stmt.setInt(2, book.getId());
+
+            final int affectedRows = stmt.executeUpdate();
+            if(affectedRows == 0)
+                return null;
+
+            return book;
+        } catch(SQLException e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    public boolean delete(Connection conn, int id) {
+        try {
+            final PreparedStatement stmt = conn.prepareStatement("DELETE FROM book WHERE id = ?");
+            stmt.setInt(1, id);
+
+            final int affectedRows = stmt.executeUpdate();
+            if(affectedRows == 0)
+                return false;
+
+            stmt.close();
+
+            return true;
+        } catch(SQLException e) {
+            System.out.println(e);
+            return false;
         }
     }
 }

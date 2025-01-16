@@ -1,11 +1,9 @@
-package com.example.POO_Biblioteca.model;
+package com.example.POO_Biblioteca.model.dto;
 
-public class Book {
-    private int id;
+public class BookDTO {
     private String title;
 
-    public Book(int id, String title) {
-        this.id = id;
+    public BookDTO(String title) {
         this.title = title;
     }
 
@@ -15,9 +13,5 @@ public class Book {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public int getId() {
-        return id;
     }
 }
