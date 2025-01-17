@@ -2,7 +2,7 @@ package com.example.POO_Biblioteca.controller;
 
 import com.example.POO_Biblioteca.model.Book;
 import com.example.POO_Biblioteca.model.ErrorResponse;
-import com.example.POO_Biblioteca.model.dto.BookDTO;
+import com.example.POO_Biblioteca.dto.BookDTO;
 import com.example.POO_Biblioteca.service.BookService;
 import org.springframework.web.bind.annotation.*;
 

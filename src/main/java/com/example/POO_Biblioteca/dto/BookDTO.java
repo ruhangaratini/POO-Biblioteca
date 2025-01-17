@@ -1,4 +1,4 @@
-package com.example.POO_Biblioteca.model.dto;
+package com.example.POO_Biblioteca.dto;
 
 public class BookDTO {
     private String title;

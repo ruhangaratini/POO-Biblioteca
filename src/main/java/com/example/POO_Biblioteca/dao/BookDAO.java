@@ -2,7 +2,7 @@ package com.example.POO_Biblioteca.dao;
 
 import com.example.POO_Biblioteca.config.Mysql;
 import com.example.POO_Biblioteca.model.Book;
-import com.example.POO_Biblioteca.model.dto.BookDTO;
+import com.example.POO_Biblioteca.dto.BookDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -73,6 +73,27 @@ public class BookDAO {
             stmt.close();
 
             return book;
+        } catch(SQLException e) {
+            System.out.println(e);
+            return null;
+        }
+    }
+
+    public ArrayList<Book> getListByIds(Connection conn, Array ids) {
+        final ArrayList<Book> books = new ArrayList<Book>();
+
+        try {
+            final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM book WHERE id IN (?)");
+            stmt.setArray(1, ids);
+
+            final ResultSet rs = stmt.executeQuery();
+
+            while(rs.next())
+                books.add(new Book(rs.getInt("id"), rs.getString("title"), rs.getDouble("price"), rs.getInt("quantity")));
+
+            stmt.close();
+
+            return books;
         } catch(SQLException e) {
             System.out.println(e);
             return null;
