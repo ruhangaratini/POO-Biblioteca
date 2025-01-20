@@ -9,4 +9,4 @@ Projeto desenvolvido como parte da avaliação da disciplina de Programação Or
 - A aplicação deve ser um CRUD simples apenas para venda de livros sem a necessidade de usuários
 
 
-Desenvolvedor: Ruhan Garatini
+Desenvolvedor: Ruhan Garatini | 20/01/2025
