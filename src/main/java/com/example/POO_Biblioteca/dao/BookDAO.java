@@ -34,8 +34,6 @@ public class BookDAO {
                 "quantity INT NOT NULL" +
             ")");
 
-            System.out.println(stmt.getResultSet());
-
             stmt.close();
             conn.close();
         } catch (SQLException e) {
@@ -79,12 +77,11 @@ public class BookDAO {
         }
     }
 
-    public ArrayList<Book> getListByIds(Connection conn, Array ids) {
+    public ArrayList<Book> getListByIds(Connection conn, String bookIdList) {
         final ArrayList<Book> books = new ArrayList<Book>();
 
         try {
-            final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM book WHERE id IN (?)");
-            stmt.setArray(1, ids);
+            final PreparedStatement stmt = conn.prepareStatement("SELECT * FROM book WHERE id IN (" + bookIdList + ")");
 
             final ResultSet rs = stmt.executeQuery();
 
