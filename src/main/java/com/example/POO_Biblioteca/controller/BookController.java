@@ -42,7 +42,6 @@ public class BookController {
 
     @PutMapping
     public Object updateBook(@RequestBody Book book) {
-        System.out.println(book.getId());
         final Book bookUpdated = service.updateBook(book);
 
         if(bookUpdated == null)

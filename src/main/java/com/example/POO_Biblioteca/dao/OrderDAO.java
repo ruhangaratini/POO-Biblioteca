@@ -44,8 +44,8 @@ public class OrderDAO {
                 "price DECIMAL(8, 2) NOT NULL," +
                 "quantity INT NOT NULL," +
                 "PRIMARY KEY (orderId, bookId)," +
-                "FOREIGN KEY (orderId) REFERENCES orders(id)," +
-                "FOREIGN KEY (bookId) REFERENCES book(id)" +
+                "FOREIGN KEY (orderId) REFERENCES orders(id) ON DELETE CASCADE," +
+                "FOREIGN KEY (bookId) REFERENCES book(id) ON DELETE CASCADE" +
             ")");
 
             stmt.close();
